@@ -1,0 +1,17 @@
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Qwerty Google Spreadsheet service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/ubuntu/services/qwerty-spreadsheet
+LimitNOFILE=4096
+ExecStart=uvicorn main:app --host 0.0.0.0 --port 8300 --reload
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
