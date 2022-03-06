@@ -1,0 +1,30 @@
+name: Deployment
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-20.04
+
+    env:
+      SSH_PATH: /home/ubuntu/services/qwerty-spreadsheet-service
+      SSH_USER: ubuntu
+      SSH_HOST: 54.167.45.35
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Config SSH connection to the Server, we need SSH_HOST / SSH_PRIVATE_KEY / SSH_USER
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+      - name: Adding known Hosts
+        run: ssh-keyscan -H ${{ env.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy with rsync
+        run: rsync -avz --progress ./ ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:${{ env.SSH_PATH }} --cvs-exclude
