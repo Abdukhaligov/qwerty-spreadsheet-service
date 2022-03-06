@@ -17,7 +17,7 @@ app = FastAPI()
 
 @app.post("/append")
 async def append(_request: AppendRequest):
-    SERVICE.spreadsheets().values().update(spreadsheetId=_request.spreadsheet_id,
+    SERVICE.spreadsheets().values().append(spreadsheetId=_request.spreadsheet_id,
                                            body={'values': _request.data},
                                            range=_request.range,
                                            valueInputOption='USER_ENTERED').execute()
